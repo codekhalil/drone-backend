@@ -8,11 +8,13 @@ router.post('/', async (req, res) => {
 
   try {
     const result = await db.query(
-      `INSERT INTO streetlight_events (flight_id, time, lat, lon, lux, status)
+      `INSERT INTO streetlight_events 
+        (flight_id, time, lat, lon, lux, status)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
       [flight_id, time, lat, lon, lux, status]
     );
+
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -26,26 +28,6 @@ router.get('/', async (req, res) => {
       `SELECT id, time, lat, lon, lux, status 
        FROM streetlight_events 
        ORDER BY time DESC`
-    );
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-module.exports = router;
-const express = require('express');
-const router = express.Router();
-const db = require('../db');
-
-// GET all streetlight events (or only OFF)
-router.get('/', async (req, res) => {
-  try {
-    const result = await db.query(
-      `SELECT id, timestamp, lat, lon, lux, status 
-       FROM streetlight_events
-       WHERE status = 'OFF'
-       ORDER BY timestamp DESC`
     );
     res.json(result.rows);
   } catch (err) {
