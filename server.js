@@ -1,26 +1,21 @@
 const express = require('express');
 const cors = require('cors');
-const db = require('./db');  // <-- this connects to Neon
-
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Basic root endpoint
+// Root test route
 app.get('/', (req, res) => {
   res.send('Backend is running!');
 });
 
-// Database test endpoint
-app.get('/test-db', async (req, res) => {
-  try {
-    const result = await db.query('SELECT NOW()');
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// ROUTES
+app.use('/flights', require('./routes/flights'));
+app.use('/gps', require('./routes/gps'));
+app.use('/streetlight-events', require('./routes/streetlights'));
+app.use('/videos', require('./routes/videos'));
 
 const PORT = process.env.PORT || 3000;
 
