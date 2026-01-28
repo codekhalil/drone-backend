@@ -12,9 +12,9 @@ app.get("/", (req, res) => {
 });
 
 // Routes
-app.use("/pothole-events", require("./routes/pothole_events"));
+app.use("/pothole_events", require("./routes/pothole_events"));
 app.use("/flights", require("./routes/flights"));
-app.use("/streetlight-events", require("./routes/streetlight_events"));
+app.use("/streetlight_events", require("./routes/streetlight_events"));
 app.use("/streetlights", require("./routes/streetlights")); // NEW ROUTE
 
 const PORT = process.env.PORT || 3000;
