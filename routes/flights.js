@@ -1,37 +1,31 @@
-const express = require('express');
+// routes/flights.js
+const express = require("express");
 const router = express.Router();
-const db = require('../db');
+const pool = require("../db");
 
-// Start a flight
-router.post('/start', async (req, res) => {
-  const { mode } = req.body;
-
+// GET all flights
+router.get("/", async (req, res) => {
   try {
-    const result = await db.query(
-      `INSERT INTO flights (mode) VALUES ($1) RETURNING *`,
-      [mode]
-    );
-    res.json(result.rows[0]);
+    const result = await pool.query("SELECT * FROM flights");
+    res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error fetching flights:", err);
+    res.status(500).json({ error: "Failed to fetch flights" });
   }
 });
 
-// End a flight
-router.post('/end', async (req, res) => {
-  const { flight_id } = req.body;
-
+// Optional: filter flights by start and end time
+router.get("/filter", async (req, res) => {
+  const { start, end } = req.query; // e.g., ?start=2026-01-01&end=2026-01-29
   try {
-    const result = await db.query(
-      `UPDATE flights 
-       SET end_time = NOW() 
-       WHERE id = $1 
-       RETURNING *`,
-      [flight_id]
+    const result = await pool.query(
+      "SELECT * FROM flights WHERE start_time >= $1 AND end_time <= $2",
+      [start, end]
     );
-    res.json(result.rows[0]);
+    res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error filtering flights:", err);
+    res.status(500).json({ error: "Failed to filter flights" });
   }
 });
 
