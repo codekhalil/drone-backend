@@ -1,37 +1,16 @@
-const express = require('express');
+// routes/streetlights.js
+const express = require("express");
 const router = express.Router();
-const db = require('../db');
+const pool = require("../db");
 
-// Insert streetlight event
-router.post('/', async (req, res) => {
-  const { flight_id, time, lat, lon, lux, status } = req.body;
-
+// GET all streetlights
+router.get("/", async (req, res) => {
   try {
-    const result = await db.query(
-      `INSERT INTO streetlight_events 
-        (flight_id, time, lat, lon, lux, status)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
-      [flight_id, time, lat, lon, lux, status]
-    );
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get all streetlight events
-router.get('/', async (req, res) => {
-  try {
-    const result = await db.query(
-      `SELECT id, time, lat, lon, lux, status 
-       FROM streetlight_events 
-       ORDER BY time DESC`
-    );
+    const result = await pool.query("SELECT * FROM streetlights");
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error fetching streetlights:", err);
+    res.status(500).json({ error: "Failed to fetch streetlights" });
   }
 });
 
