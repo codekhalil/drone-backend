@@ -1,3 +1,4 @@
+// index.js
 const express = require("express");
 const cors = require("cors");
 
@@ -11,9 +12,11 @@ app.get("/", (req, res) => {
 });
 
 // Routes
-app.use("/streetlights", require("./routes/streetlights"));
+app.use("/pothole-events", require("./routes/pothole_events"));
+app.use("/flights", require("./routes/flights"));
+app.use("/streetlight-events", require("./routes/streetlight_events"));
+app.use("/streetlights", require("./routes/streetlights")); // NEW ROUTE
 
-// Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
